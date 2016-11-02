@@ -11,13 +11,27 @@ class UserAction extends Action {
     public function index(){
         //echo "userAction";
         //从数据中读取出来
-        $m=M('User');
+  /*      $m=M('User');
         $arr=$m->select();
         var_dump($arr);
         //需要绑定内容
-        $this->assign('data',$arr);
+        $this->assign('data',$arr);*/
+        import('ORG.Util.Page'); //Page类的引入
 
-
+        $db = M("User");
+        $where = "createtime='0'";
+        $count = $db->where($where)->count();
+        $pagecount = 20;
+        $page = new Page($count , $pagecount);
+        $page->setConfig('first','first');
+        $page->setConfig('prev','prev');
+        $page->setConfig('next','next');
+        $page->setConfig('last','last');
+        //$page->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% 第 1 页/共 %TOTAL_PAGE% 页 ( '.$pagecount.' 条/页 共 %TOTAL_ROW% 条)');
+        $show = $page->show();
+        $list = $db->where($where)->order('id desc')->limit($page->firstRow.','.$page->listRows)->select();
+        $this->assign('list',$list);
+        $this->assign('page',$show);
         $this->display();
     }
 

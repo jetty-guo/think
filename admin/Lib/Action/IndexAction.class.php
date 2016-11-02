@@ -22,20 +22,14 @@ class IndexAction extends Action {
 		
 			//分页显示文章列表，每页8篇文章
 			import('ORG.Util.Page');
-			$page=new Page($count,8);//后台管理页面默认一页显示8条文章记录
-	
-            $page->setConfig('prev', "&laquo; Previous");//上一页
-            $page->setConfig('next', 'Next &raquo;');//下一页
-            $page->setConfig('first', '&laquo; First');//第一页
-            $page->setConfig('last', 'Last &raquo;');//最后一页	
-			$page->setConfig('theme',' %first% %upPage%  %linkPage%  %downPage% %end%');
-            //设置分页回调方法
-			$show=$page->show();
-	
-			$news_list=$news->field(array('id','subject','author','createtime','lastmodifytime'))->order('id desc')->limit($page->firstRow.','.$page->listRows)->select();
-			
+			$page=new Page($count,10);//后台管理页面默认一页显示10条文章记录
+
+            $news_list=$news->field(array('id','subject','author','createtime','lastmodifytime'))->order('id desc')->limit($page->firstRow,$page->listRows)->select();
+
+            $show=$page->show();
+            file_put_contents("d:/d.log",$show);
 			//对原始信息过滤
-			$this->filter($news_list);
+			//$this->filter($news_list);
 			
 			$this->assign('news_count',$count);
 			$this->assign('title','后台文章管理系统');
